@@ -27,7 +27,7 @@ def snippet_list(request, format=None):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-"""
+
 # 3- Class Based Views ka views.py
 from snippets.models import Snippet
 from snippets.serializers import SnippetSerializer
@@ -38,9 +38,9 @@ from rest_framework import status
 
 
 class SnippetList(APIView):
-    """
-    List all snippets, or create a new snippet.
-    """
+    
+    #List all snippets, or create a new snippet.
+    
     def get(self, request, format=None):
         snippets = Snippet.objects.all()
         serializer = SnippetSerializer(snippets, many=True)
@@ -52,7 +52,7 @@ class SnippetList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-"""
+
 
 2 - Requests and Responses ka Views.py
 
@@ -83,12 +83,12 @@ def snippet_detail(request, pk, format=None):
         snippet.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-"""
+
 # 3- Class Based Views ka views.py
 class SnippetDetail(APIView):
-    """
+    
     Retrieve, update or delete a snippet instance.
-    """
+    
     def get_object(self, pk):
         try:
             return Snippet.objects.get(pk=pk)
@@ -112,3 +112,43 @@ class SnippetDetail(APIView):
         snippet = self.get_object(pk)
         snippet.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+        
+"""
+
+# Using mixins
+
+from snippets.models import Snippet
+from snippets.serializers import SnippetSerializer
+from rest_framework import mixins
+from rest_framework import generics
+
+class SnippetList(mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                  generics.GenericAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+class SnippetDetail(mixins.RetrieveModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin,
+                    generics.GenericAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+
+
