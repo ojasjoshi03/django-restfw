@@ -1,6 +1,8 @@
 from django.shortcuts import render
 
 # Create your views here.
+from .serializers import UserSerializer
+
 """
 2 - Requests and Responses ka Views.py
 
