@@ -186,6 +186,7 @@ class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
 #Adding endpoints for our User models
 from django.contrib.auth.models import User
 
+"""
 from snippets.serializers import UserSerializer
 
 class UserList(generics.ListAPIView):
@@ -196,6 +197,21 @@ class UserList(generics.ListAPIView):
 class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+"""
+#Refactoring to use ViewSets
+
+from rest_framework import viewsets
+
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+
 #Associating Snippets with Users
 def perform_create(self, serializer):
     serializer.save(owner=self.request.user)
