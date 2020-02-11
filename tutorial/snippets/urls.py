@@ -9,9 +9,12 @@ urlpatterns = [
 
     path('snippets/', views.SnippetList.as_view()),
     path('snippets/<int:pk>/', views.SnippetDetail.as_view()),
-    #Adding endpoints for our User models
+    # Adding endpoints for our User models
     path('users/', views.UserList.as_view()),
     path('users/<int:pk>/', views.UserDetail.as_view()),
+    # Creating an endpoint for the highlighted snippets
+    path('', views.api_root),
+    path('snippets/<int:pk>/highlight/', views.SnippetHighlight.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
