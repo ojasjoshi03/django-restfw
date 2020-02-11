@@ -157,15 +157,42 @@ class SnippetDetail(mixins.RetrieveModelMixin,
 from snippets.models import Snippet
 from snippets.serializers import SnippetSerializer
 from rest_framework import generics
+#Adding required permissions to views
+from rest_framework import permissions
+#Object level permissions
+from snippets.permissions import IsOwnerOrReadOnly
 
 
 class SnippetList(generics.ListCreateAPIView):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
+    #Adding required permissions to views
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
+    #Adding required permissions to views
+    #Object level permissions
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,IsOwnerOrReadOnly]
+
+#Adding endpoints for our User models
+from django.contrib.auth.models import User
+
+from snippets.serializers import UserSerializer
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+#Associating Snippets with Users
+def perform_create(self, serializer):
+    serializer.save(owner=self.request.user)
+
 
 

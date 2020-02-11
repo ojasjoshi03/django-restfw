@@ -23,6 +23,8 @@ urlpatterns = [
 from django.urls import include, path
 from rest_framework import routers
 from quickstart import views
+#Adding login to the Browsable API
+from django.conf.urls import include
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
@@ -32,6 +34,7 @@ router.register(r'groups', views.GroupViewSet)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('', include(router.urls)),
+    #Adding login to the Browsable API
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('', include('snippets.urls')),
 ]
